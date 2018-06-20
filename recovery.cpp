@@ -170,7 +170,6 @@ static bool yes_no(Device* device, const char* question1, const char* question2)
   return (chosen_item == 1);
 }
 
-
 std::string get_chosen_slot(Device* device) {
   std::vector<std::string> headers{ "Choose which slot to boot into on next boot." };
   std::vector<std::string> items{ "A", "B" };
@@ -205,6 +204,15 @@ int set_slot(Device* device) {
     }
   }
   return ret;
+}
+
+bool ask_to_continue_unverified(Device* device) {
+  if (get_build_type() == "user") {
+    return false;
+  } else {
+    device->GetUI()->SetProgressType(RecoveryUI::EMPTY);
+    return yes_no(device, "Signature verification failed", "Install anyway?");
+  }
 }
 
 static bool ask_to_wipe_data(Device* device) {
